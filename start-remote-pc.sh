@@ -30,4 +30,4 @@ DOCPARAMS="-e ROS_HOSTNAME=localhost -v $PWD:/ros -w /ros"
 
 printf "${YELLOW}Warning: Controller not detected.  The joy node will be non-operational. [WIP]${NC}\n"
 
-docker run $DOCPARAMS --rm -it $(docker build -q docker) /bin/bash
+docker run $DOCPARAMS --rm -it $(docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -q docker) /bin/bash
