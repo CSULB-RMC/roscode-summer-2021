@@ -19,7 +19,7 @@ done
 #    #'(?:.*ATTRS\{name\}==\")(.*)(?:\")'`
 #fi
 #printf
-ROSHOST=`ip -4 addr show enp5s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'`
+#ROSHOST=`ip -4 addr show enp5s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'`
 #if [[ -z "${JOYDEV}" ]]; then
 #    DOCPARAMS=-e 
 
