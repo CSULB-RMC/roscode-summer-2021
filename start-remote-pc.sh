@@ -3,6 +3,7 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+JOYDEV=
 #JOYDEV=/dev/null
 for ((i=0; i <=5; i++)); do
 #printf "testing /dev/input/js$i\n"
@@ -25,9 +26,13 @@ done
 
 #else
 #fi
-DOCPARAMS="-e ROS_HOSTNAME=localhost -v $PWD:/ros -w /ros"
+if [[ -z "${JOYDEV}" ]]; then
+    printf "${YELLOW}Warning: Controller not detected.  The joy node will be non-operational.${NC}\n"
+else
+    JOYPARAM="--device=$JOYDEV"
+fi
 
 
-printf "${YELLOW}Warning: Controller not detected.  The joy node will be non-operational. [WIP]${NC}\n"
+DOCPARAMS="--network host -e ROS_MASTER_URI=http://localhost:11311 -e ROS_HOSTNAME=localhost -v $PWD:/ros -w /ros"
 
-docker run $DOCPARAMS --rm -it $(docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -q docker) /bin/bash
+docker run $DOCPARAMS $JOYPARAM --rm -it $(docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -q docker) /bin/bash

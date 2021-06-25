@@ -25,7 +25,7 @@ telescope_forward_pub = rospy.Publisher('telescope_forward', Empty, queue_size=1
 telescope_backward_pub = rospy.Publisher('telescope_backward', Empty, queue_size=10)
 
 def joyCallback(data):
-	#rospy.loginfo(rospy.loginfo(rospy.get_caller_id() + "JOY CALLBACK! %s", data))
+	rospy.loginfo(rospy.loginfo(rospy.get_caller_id() + "JOY CALLBACK! %s", data))
 
 	# Y/A button 
 	if data.buttons[2] == 1: #Y - dumper up
@@ -40,7 +40,7 @@ def joyCallback(data):
 		test_led_pub.publish()
 
 
-	rospy.loginfo(rospy.loginfo(rospy.get_caller_id() + " CALLING DT " + str(data.axes[1]*64) + "\n"))
+	#rospy.loginfo(rospy.loginfo(rospy.get_caller_id() + " CALLING DT " + str(data.axes[1]*64) + "\n"))
 
 	curbed = int(64+(data.axes[1]*64))
 	if curbed > 127:
@@ -56,7 +56,7 @@ def joyCallback(data):
 	dt_right_pub.publish(Byte(curbed))
 
 	if data.buttons[1] == 1:
-		rospy.loginfo(rospy.loginfo("OOOO TESTING\n"))
+		#rospy.loginfo(rospy.loginfo("OOOO TESTING\n"))
 		auger_up_pub.publish()
 
 	if data.buttons[3] == 1:
@@ -76,4 +76,6 @@ def joyCallback(data):
 
 if __name__=="__main__":
 	rospy.init_node("rmc_teleop")
-	rospy.Subscriber("joy". Joy, joyCallback)
+	rospy.Subscriber("joy", Joy, joyCallback)
+	
+	rospy.spin()
