@@ -14,18 +14,10 @@ for ((i=0; i <=5; i++)); do
     fi
 done
 
-#eh forget about this for now i dont want to spend time making it work
-#if command -v udevadm &> /dev/null; then
-#    printf "Dev is %s\n" `udevadm info --attribute-walk --name $JOYDEV|grep -Po '(?<=name}==")(.*)(?<=")'`
-#    #'(?:.*ATTRS\{name\}==\")(.*)(?:\")'`
-#fi
-#printf
-#ROSHOST=`ip -4 addr show enp5s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'`
-#if [[ -z "${JOYDEV}" ]]; then
-#    DOCPARAMS=-e 
+#omega long command to get list of local IP addresses.  lots of regex
+HOSTIP=`ip addr show|grep -Po 'inet.*(?<!lo|docker\d)$'|grep -Po '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?=/)'`
+printf "Host ip: %s\n", ${HOSTIP[0]}
 
-#else
-#fi
 if [[ -z "${JOYDEV}" ]]; then
     printf "${YELLOW}Warning: Controller not detected.  The joy node will be non-operational.${NC}\n"
 else
@@ -33,6 +25,7 @@ else
 fi
 
 
-DOCPARAMS="--network host -e ROS_MASTER_URI=http://localhost:11311 -e ROS_HOSTNAME=localhost -v $PWD:/ros -w /ros"
+DOCPARAMS="--network host -e ROS_MASTER_URI=http://${HOSTIP[0]}:11311 -e ROS_HOSTNAME=${HOSTIP[0]} -v $PWD:/ros -w /ros"
 
-docker run $DOCPARAMS $JOYPARAM --rm -it $(docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -q docker) /bin/bash
+docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) docker -t rmc:ros
+docker run $DOCPARAMS $JOYPARAM --rm -it rmc:ros /bin/bash
