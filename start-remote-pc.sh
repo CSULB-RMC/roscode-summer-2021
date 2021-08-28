@@ -25,8 +25,16 @@ else
     JOYPARAM="--device=$JOYDEV"
 fi
 
+CLEARCACHEP=
+
+if [ "$1" ]; then
+    if [ $1 = "no-cache" ]; then
+        printf "Not using previous cache.\n"
+        CLEARCACHEP="--no-cache"
+    fi
+fi
 
 DOCPARAMS="--network host -e ROS_MASTER_URI=http://${HOSTIP}:11311 -e ROS_HOSTNAME=${HOSTIP} -v $PWD:/ros -w /ros"
 
-docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) docker -t rmc:ros
+docker build $CLEARCACHEP --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) docker -t rmc:ros
 docker run $DOCPARAMS $JOYPARAM --rm -it rmc:ros /bin/bash
